@@ -1,0 +1,50 @@
+{
+    "manifest_version": 3,
+    "name": "KES",
+    "description": "KES rozšírenie",
+    "version": "0.2",
+    "author": "Kancelária Ekonomických Služieb",
+  
+    "permissions": [
+      "messagesRead",
+      "messagesUpdate",
+      "messagesTagsList",
+      "messagesTags",
+      "accountsRead"
+    ],
+  
+    "background": {
+      "scripts": ["js/background.js"],
+      "type": "module"
+    },
+  
+    "action": {
+      "default_popup": "popup/popup.html",
+      "default_title": "KES",
+      "default_icon": "images/internet-32px.png"
+    },
+  
+    "icons": {
+      "64": "images/internet.png",
+      "32": "images/internet-32px.png",
+      "16": "images/internet-16px.png"
+    },
+  
+    "content_scripts": [
+      {
+        "matches": ["<all_urls>"],
+        "js": ["js/misc.js"]
+      }
+    ],
+  
+    "web_accessible_resources": [
+      {
+        "resources": [
+          "data/filetypes.json",
+          "images/*"
+        ],
+        "matches": ["<all_urls>"]
+      }
+    ]
+  }
+  

@@ -1,0 +1,11 @@
+{
+  "pdf": { "names": ["pdf"], "color": "#b22222" },
+  "word": { "names": ["docx", "doc"], "color": "#1e90ff" },
+  "powerpoint": { "names": ["ppt", "pptx"], "color": "#ff8c00" },
+  "excel": { "names": ["xls", "xlsx"], "color": "#228b22" },
+  "opendocument": { "names": ["odt", "ods", "odp"], "color": "#4682b4" },
+  "markdown": { "names": ["md"], "color": "#6a5acd" },
+  "text": { "names": ["txt"], "color": "#a9a9a9" },
+  "zip": { "names": ["7z", "rar", "zip"], "color": "#ba55d3" },
+  "obrazky": { "names": ["png", "jpg", "jpeg"], "color": "#006400" }
+}
