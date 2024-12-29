@@ -41,6 +41,7 @@
       {
         "resources": [
           "data/filetypes.json",
+          "data/config.json",
           "images/*"
         ],
         "matches": ["<all_urls>"]

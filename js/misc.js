@@ -21,20 +21,16 @@ const getAttachments = async (email) => {
     return browser.messages.listAttachments(email.id);
 };
 
-const createNewKey = (lastKey) => {
-    return lastKey.replace(/(\d+)$/, (_, num) => String(Number(num) + 1));
-};
 
-const createTag = async (tagName, tagColor, existingTags) => {
+const createTag = async (tagName, tagColor, tagKey, existingTags) => {
     try {
         if (existingTags.some((tag) => tag.tag === tagName)) {
             console.log(`Tag "${tagName}" already exists.`);
             return existingTags;
         }
 
-        const newKey = createNewKey(existingTags.at(-1)?.key || "0");
-        await browser.messages.tags.create(newKey, tagName, tagColor);
-        existingTags.push({ key: newKey, tag: tagName, color: tagColor });
+        await browser.messages.tags.create(tagKey, tagName, tagColor);
+        existingTags.push({ key: tagKey, tag: tagName, color: tagColor });
         console.log(`Tag "${tagName}" created successfully.`);
         return existingTags;
     } catch (error) {
@@ -81,24 +77,23 @@ export const tagMail = async (mail) => {
         const filetype = Object.entries(filetypes).find(([_, type]) => type.names.includes(extension));
     
         if (filetype) {
-            const [tag, { color }] = filetype;
+            const [tag, { color, key }] = filetype;
     
-            // Check if the tag already exists; if not, create it
+            // Check if the tag already exists
             if (!existingTags.some((t) => t.tag === tag)) {
-                existingTags = await createTag(tag, color, existingTags);
+                existingTags = await createTag(tag, color, key, existingTags);
             }
-    
-            // Add the tag to the list of tags to add to the mail
+
             tagsToAdd.push({ name: tag, color });
         } else {
-            // Handle unknown file type with "ostatne"
-            const unknownTag = "ostatne";
+            // Handle unknown file types
+            const unknownTag = "Ostatne";
             const unknownColor = "#000000";
             
             const existingOstatneTag = existingTags.find((t) => t.tag === unknownTag);
             
             if (!existingOstatneTag) {
-                let ostatneKey = createNewKey(existingTags.at(-1).key)
+                let ostatneKey = "a928a8c6-ef06-4953-8ecd-52938f0de53a"
                 await browser.messages.tags.create(ostatneKey, unknownTag, unknownColor);
                 existingTags.push({ key: ostatneKey, tag: unknownTag, color: unknownColor });
             }
@@ -107,8 +102,6 @@ export const tagMail = async (mail) => {
         }
     }
     
-
-    // Add all collected tags to the mail in one go
     await addTagsToMail(mail, tagsToAdd, existingTags);
 };
 
@@ -137,3 +130,4 @@ export const handleError = (fnName, error) => {
     alert(`Error occurred in ${fnName}:\n${error.message}`);
     console.error(`${fnName}:`, error);
 };
+

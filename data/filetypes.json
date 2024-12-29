@@ -1,11 +1,11 @@
 {
-  "pdf": { "names": ["pdf"], "color": "#b22222" },
-  "word": { "names": ["docx", "doc"], "color": "#1e90ff" },
-  "powerpoint": { "names": ["ppt", "pptx"], "color": "#ff8c00" },
-  "excel": { "names": ["xls", "xlsx"], "color": "#228b22" },
-  "opendocument": { "names": ["odt", "ods", "odp"], "color": "#4682b4" },
-  "markdown": { "names": ["md"], "color": "#6a5acd" },
-  "text": { "names": ["txt"], "color": "#a9a9a9" },
-  "zip": { "names": ["7z", "rar", "zip"], "color": "#ba55d3" },
-  "obrazky": { "names": ["png", "jpg", "jpeg"], "color": "#006400" }
+  "Pdf": { "names": ["pdf"], "color": "#b22222", "key": "cea73b21-1fdd-479d-b18a-8cd0c1383fe2" },
+  "Word": { "names": ["docx", "doc"], "color": "#1e90ff", "key": "d2e6e16c-612f-451e-8cf4-7b47e7492009" },
+  "Powerpoint": { "names": ["ppt", "pptx"], "color": "#ff8c00", "key": "a87aab87-fdd2-4429-b5b4-bedda4112b01" },
+  "Excel": { "names": ["xls", "xlsx"], "color": "#228b22", "key": "33e90770-4974-4cdd-978b-02daf38d387b" },
+  "Opendocument": { "names": ["odt", "ods", "odp"], "color": "#4682b4", "key": "c253ce3b-f793-4c62-ac92-1d2008601341" },
+  "Markdown": { "names": ["md"], "color": "#6a5acd", "key": "fb0c56e9-78e3-43b3-b54d-fb3a16e9363c" },
+  "Text": { "names": ["txt"], "color": "#a9a9a9", "key": "9d0f8981-b2ae-44d8-8fb3-47e197908456" },
+  "Zip": { "names": ["7z", "rar", "zip"], "color": "#ba55d3", "key": "2e71031e-593f-48a0-83e9-c0a33b39c774" },
+  "Obrazky": { "names": ["png", "jpg", "jpeg"], "color": "#006400", "key": "c2d1a52f-e8fa-4392-a69d-faa2ff1e9df4" }
 }
