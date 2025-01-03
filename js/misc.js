@@ -130,67 +130,72 @@ export const tagSelectedEmails = async () => {
   }
 };
 
-const ensureDirectoryExists = async (directoryPath) => {
-  try {
-    const dirHandle = await browser.storage.local.get(directoryPath);
-    if (!dirHandle) {
-      console.log(`Directory does not exist: ${directoryPath}`);
-      return null;
-    }
-    return dirHandle;
-  } catch (error) {
-    console.error(
-      `Failed to check or create directory ${directoryPath}:`,
-      error
-    );
-    return null;
-  }
-};
-
-const downloadAttachment = async (message, attachment) => {
+const downloadAttachment = async (message, attachment, filePath) => {
   try {
     // Decode and sanitize the filename
-    const sanitizedFilename = decodeURIComponent(attachment.name).replace(/[\\/:\*\?\"<>|]/g, "_");
+    const sanitizedFilename = decodeURIComponent(attachment.name).replace(
+      /[\\/:\*\?\"<>|]/g,
+      "_"
+    );
 
     // Use the browser.messages.getAttachmentFile API to fetch the attachment as a Blob
-    const blob = await browser.messages.getAttachmentFile(message.id, attachment.partName);
+    const blob = await browser.messages.getAttachmentFile(
+      message.id,
+      attachment.partName
+    );
 
-    // Create a temporary URL for the Blob
-    const blobUrl = URL.createObjectURL(blob);
-
-    // Use the browser.downloads API to save the attachment
-    let downloadId;
-    try {
-      console.log(blobUrl)
-      downloadId = await browser.downloads.download({
-        url: blobUrl,
-        filename: sanitizedFilename,
-        conflictAction: "overwrite",
-      });
-      console.log("comepleted")
-    } catch (downloadError) {
-      console.error("Error during download:", downloadError);
-      throw downloadError; // Re-throw the error if needed
+    if (!blob) {
+      console.error("No blob received for attachment:", attachment.name);
+      throw new Error("Failed to retrieve blob for attachment");
     }
 
-    console.log(`Downloaded: ${sanitizedFilename}`);
+    const blobUrl = URL.createObjectURL(blob);
+
+    const downloadId = await browser.downloads.download({
+      url: blobUrl,
+      filename: `${filePath}${sanitizedFilename}`,
+      saveAs: false,
+    });
+
+    // Log the result and check download ID
+    if (downloadId) {
+      console.log("Download initiated with ID:", downloadId);
+    } else {
+      console.error("Download failed to initiate.");
+    }
+
+    // Revoke the Blob URL after initiating the download
+    URL.revokeObjectURL(blobUrl);
     return downloadId;
   } catch (error) {
     console.error(`Failed to download attachment ${attachment.name}:`, error);
+    throw error;
   }
 };
-
-
 
 const getFileExtension = (filename) => {
   const parts = filename.split(".");
   return parts.length > 1 ? parts.pop().toLowerCase() : "";
 };
 
+async function getFolderByExtension(extension) {
+  const filetypes = await loadFiletypes();
+  for (const [folder, data] of Object.entries(filetypes)) {
+    // Check if the extension is in the names array
+    if (data.names.includes(extension.toLowerCase())) {
+      return folder; // Return the folder name if found
+    }
+  }
+
+  // Return a default folder if the extension is not found in the data
+  return "Ostatne";
+}
+
 export const downloadAllSelectedEmailAttachments = async () => {
   try {
+    let id;
+    let os = await browser.runtime.getPlatformInfo();
     const emails = await getSelectedEmails(); // Fetch selected emails
-    const fileTypes = loadFiletypes()
     if (!emails) return;
 
     for (const message of emails.messages) {
@@ -198,29 +203,18 @@ export const downloadAllSelectedEmailAttachments = async () => {
 
       for (const attachment of attachments) {
         const extension = getFileExtension(attachment.name); // Get file extension
-        const category = Object.keys(fileTypes).find((key) =>
-          fileTypes[key].names.includes(extension)
-        );
-        // const directoryPath = category
-        //   ? `C:\\downloads\\${category}`
-        //   : `C:\\downloads\\Other`;
-        const directoryPath = category
-          ? `/Users/fojutoro/Documents/projects/thunderbird_extensions/kes-extension/${category}`
-          : `/Users/fojutoro/Documents/projects/thunderbird_extensions/kes-extension`;
+        const folder = await getFolderByExtension(extension);
+        let filePath = `prilohy/${folder}/`;
 
-        // Ensure directory exists
-        const dirExists = await ensureDirectoryExists(directoryPath);
-        if (!dirExists) {
-          console.warn(
-            `Skipping download for ${attachment.name}: Directory missing`
-          );
-          continue;
+        // Check if the OS is Windows (based on platform)
+        if (os == "win") {
+          filePath = `prilohy\\${folder}\\`;
         }
-
         // Download attachment
-        await downloadAttachment(message, attachment, directoryPath);
+        id = await downloadAttachment(message, attachment, filePath);
       }
     }
+    browser.downloads.show(id);
   } catch (error) {
     console.error("Error during attachment download:", error);
   }
@@ -230,4 +224,3 @@ export const handleError = (fnName, error) => {
   alert(`Error occurred in ${fnName}:\n${error.message}`);
   console.error(`${fnName}:`, error);
 };
-

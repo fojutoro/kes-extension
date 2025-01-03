@@ -12,7 +12,8 @@
       "messagesTags",
       "accountsRead",
       "downloads",
-      "storage"
+      "storage",
+      "nativeMessaging"
     ],
   
     "background": {
