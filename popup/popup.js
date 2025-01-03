@@ -1,13 +1,13 @@
-import { printAllSelectedEmailAttachments, tagSelectedEmails, handleError } from "../js/misc.js";
+import { downloadAllSelectedEmailAttachments, tagSelectedEmails, handleError } from "../js/misc.js";
 
 const func1 = document.getElementById("func1");
 const func2 = document.getElementById("func2");
 
 func1.addEventListener("click", async () => {
     try {
-        await printAllSelectedEmailAttachments();
+        await downloadAllSelectedEmailAttachments();
     } catch (error) {
-        handleError("func1.EventListener -> printAllSelectedEmailAttachments", error);
+        handleError("func1.EventListener -> downloadAllSelectedEmailAttachments", error);
     }
 });
 

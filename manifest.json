@@ -10,7 +10,9 @@
       "messagesUpdate",
       "messagesTagsList",
       "messagesTags",
-      "accountsRead"
+      "accountsRead",
+      "downloads",
+      "storage"
     ],
   
     "background": {
